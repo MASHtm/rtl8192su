@@ -1,5 +1,10 @@
 # fallback to the current kernel source
-KSRC ?= /lib/modules/$(shell uname -r)/build
+#KSRC ?= /lib/modules/$(shell uname -r)/build
+# build for specific version
+# edit KVER with newly installed kernel version (see /lib/modules/....)
+KVER=5.10.17-v7+
+KSRC = /lib/modules/${KVER}/build
+MODDIR = /lib/modules/${KVER}/updates
 
 KMOD_SRC ?= $(CURDIR)/r92su
 
@@ -39,3 +44,8 @@ unload:
 	rmmod r92su
 
 reload:	unload load
+
+install:
+	mkdir -p ${MODDIR}
+	cp "$(KMOD_SRC)/r92su.ko" ${MODDIR}
+	depmod -a ${KVER}
